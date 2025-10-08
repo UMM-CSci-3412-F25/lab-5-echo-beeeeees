@@ -18,23 +18,23 @@ public class EchoClient {
     try {
       // Connect to the server
       Socket socket = new Socket(server, portNumber);
-
-      PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-
-      // Get the input stream so we can read from that socket
       InputStream input = socket.getInputStream();
-      BufferedReader in = new BufferedReader(new InputStreamReader(input));
-    
-      BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-      // Print all the input we receive from the server
-      int line;
-      while ((line = stdIn.read()) != null) {
-        out.println(line);
-        System.out.println(in.readLine());
+      OutputStream output = socket.getOutputStream();
+      
+      int character;
+      while ((character = System.in.read()) != -1) {
+        output.write(character);
       }
 
-      // Close the socket when we're done reading from it
+      output.flush();
       socket.shutdownOutput();
+
+      while ((character = input.read()) != -1) {
+        System.out.write((char)character);
+      }
+
+      System.out.flush();
+      // Close the socket when we're done reading from it
       socket.close();
 
     // Provide some minimal error handling.

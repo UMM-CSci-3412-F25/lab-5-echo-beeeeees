@@ -16,12 +16,11 @@ public class EchoServer {
         // Wait until someone connects, thereby requesting a date
         Socket client = sock.accept();
         System.out.println("Got a request!");
-        System.out.println("sock.");
+        InputStream input = client.getInputStream();
+        OutputStream output = client.getOutputStream();
 
         // Construct a writer so we can write to the socket, thereby
         // sending something back to the client.
-        PrintWriter writer = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader stdIn = new BufferedReader(new InputStreamReader(client.getInputStream()));
         // Send the current date back to the client.
         
         
@@ -30,11 +29,13 @@ public class EchoServer {
         
 
 
-        String line;
-        while ((line = stdIn.readLine()) != null) {
-        System.out.println(line);
-        writer.println(line);
+        int character;
+        while ((character = input.read()) != -1) {
+          System.out.print((char)character);
+          output.write(character);
       }
+
+      output.flush();
 
         // Close the client socket since we're done.
         client.shutdownOutput();
